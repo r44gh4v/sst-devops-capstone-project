@@ -1,0 +1,13 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+
+grafana:
+  adminPassword: admin
+  sidecar:
+    dashboards:
+      searchNamespace: ALL
+
+alertmanager:
+  enabled: false

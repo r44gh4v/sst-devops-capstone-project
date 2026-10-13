@@ -1,0 +1,46 @@
+{{- if .Values.monitoring.grafanaDashboard }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expense-tracker-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  expense-tracker.json: |
+    {
+      "title": "Expense Tracker",
+      "uid": "expense-tracker",
+      "time": { "from": "now-30m", "to": "now" },
+      "refresh": "10s",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Requests per second",
+          "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "targets": [{ "expr": "sum(rate(http_requests_total{namespace=\"{{ .Release.Namespace }}\"}[1m])) by (handler)", "legendFormat": "{{"{{"}}handler{{"}}"}}" }]
+        },
+        {
+          "type": "timeseries",
+          "title": "Latency p95 (seconds)",
+          "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"{{ .Release.Namespace }}\"}[5m])) by (le))", "legendFormat": "p95" }]
+        },
+        {
+          "type": "stat",
+          "title": "Error rate (5xx per second)",
+          "gridPos": { "x": 0, "y": 8, "w": 12, "h": 6 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "targets": [{ "expr": "sum(rate(http_requests_total{namespace=\"{{ .Release.Namespace }}\", status=\"5xx\"}[5m])) or vector(0)" }]
+        },
+        {
+          "type": "stat",
+          "title": "Backend targets up",
+          "gridPos": { "x": 12, "y": 8, "w": 12, "h": 6 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "targets": [{ "expr": "sum(up{namespace=\"{{ .Release.Namespace }}\"})" }]
+        }
+      ]
+    }
+{{- end }}

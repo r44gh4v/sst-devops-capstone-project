@@ -1,0 +1,22 @@
+image:
+  registry: ghcr.io/r44gh4v
+  tag: "latest"
+
+backend:
+  replicas: 2
+
+frontend:
+  replicas: 2
+
+postgres:
+  database: expenses
+  user: expenses
+  password: expenses
+
+ingress:
+  enabled: true
+  className: nginx
+
+monitoring:
+  serviceMonitor: true
+  grafanaDashboard: true
