@@ -103,6 +103,12 @@ The tests use their own SQLite database, so they never touch the real PostgreSQL
 2. **Build, Scan and Push Images**: builds the backend and frontend images, scans both with Trivy (the job fails on HIGH or CRITICAL vulnerabilities that have a fix), then pushes them to GHCR tagged with the commit SHA.
 3. **Update Image Tag for Argo CD**: writes the new SHA into `helm/expense-tracker/values.yaml` and commits it. Argo CD sees the change and deploys the new version.
 
+Pipeline runs: https://github.com/r44gh4v/sst-devops-capstone-project/actions
+
+### Trivy Scan Result
+
+Trivy scans the OS packages and the Python and Node libraries inside both images, and the job fails on any HIGH or CRITICAL vulnerability that has a fix. The first scans found CVE-2025-62727 (HIGH, denial of service through overlapping Range headers) in Starlette 0.41.3 and CVE-2026-31789 (CRITICAL, OpenSSL heap buffer overflow) in the `nginx-unprivileged:1.27-alpine` base image. After upgrading FastAPI to 0.143.0 and moving to `nginx-unprivileged:1.30-alpine`, both images scan clean, so no known fixable HIGH or CRITICAL vulnerability is shipped.
+
 ## Terraform
 
 `terraform/` creates, in `ap-south-1`:
@@ -140,6 +146,26 @@ GitOps: `gitops/argocd-application.yaml` points Argo CD at `helm/expense-tracker
 - kube-prometheus-stack is installed with `monitoring/kube-prometheus-stack-values.yaml`.
 - The chart's ServiceMonitor makes Prometheus scrape the backend.
 - The chart's dashboard ConfigMap adds an "Expense Tracker" dashboard to Grafana with requests per second, p95 latency, error rate and targets up.
+
+## Screenshots
+
+| What | Screenshot |
+| :-- | :-- |
+| pytest -v, all tests passing | ![pytest](screenshots/1.png) |
+| docker compose up --build | ![compose](screenshots/2a.png) |
+| App on http://localhost:3000 | ![app](screenshots/2b.png) |
+| Backend /metrics | ![metrics](screenshots/2c.png) |
+| helm list, kubectl get pods, svc, ingress | ![k8s](screenshots/4.png) |
+| App through the Ingress | ![ingress](screenshots/7a.png) |
+| Prometheus targets UP | ![prometheus](screenshots/7b.png) |
+| Grafana dashboard | ![grafana](screenshots/7c.png) |
+| Commit history | ![commits](screenshots/8a.png) |
+| GitHub Actions green run | ![actions](screenshots/8b.png) |
+| Trivy scan output | ![trivy](screenshots/8c.png) |
+| GHCR images with SHA tags | ![ghcr](screenshots/8d.png) |
+| terraform plan | ![plan](screenshots/9a.png) |
+| VPC and EKS on AWS (AWS CLI, no Console access) | ![aws](screenshots/9b.png) |
+| terraform destroy | ![destroy](screenshots/9c.png) |
 
 ## Known Issues and Limitations
 
