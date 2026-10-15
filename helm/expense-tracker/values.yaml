@@ -1,6 +1,6 @@
 image:
   registry: ghcr.io/r44gh4v
-  tag: "eb4844eb98c13221f44547412d3d58f2907df4f0"
+  tag: "ff34d76159c7da3c66aff1cfd6959dcd80ee5dbf"
 
 backend:
   replicas: 2
