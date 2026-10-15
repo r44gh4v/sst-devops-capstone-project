@@ -55,7 +55,7 @@ export default function App() {
     <main className="page">
       <header>
         <h1>Expense Tracker</h1>
-        <p>Track where your money goes.</p>
+        <p>Track where your money goes, deployed by Argo CD.</p>
       </header>
 
       <section className="cards">
