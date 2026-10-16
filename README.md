@@ -114,7 +114,7 @@ Trivy scans the OS packages and the Python and Node libraries inside both images
 `terraform/` creates, in `ap-south-1`:
 
 - a VPC with two public subnets in two availability zones
-- an EKS cluster (Kubernetes 1.31) with a managed node group of `t3.medium` workers
+- an EKS cluster (Kubernetes 1.31) with a managed node group of `t3.small` workers
 
 ```bash
 cd terraform
